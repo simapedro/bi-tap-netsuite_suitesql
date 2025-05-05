@@ -18,7 +18,6 @@ class CurrencyRateStream(NetsuiteSuiteQLStream):
     """Define custom stream."""
 
     name = "currencyRate"
-    path = ""
     primary_keys = ["id"]
     query = "SELECT id, BUILTIN.DF(basecurrency) AS baseCurrency, effectivedate, exchangerate FROM currencyRate WHERE effectiveDate >= '1/1/2025' ORDER BY id"
     replication_key = None
