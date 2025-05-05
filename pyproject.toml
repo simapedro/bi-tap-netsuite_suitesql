@@ -3,7 +3,7 @@ name = "tap-netsuitesuiteql"
 version = "0.0.1"
 description = "Singer tap for netsuitesuiteql, built with the Meltano Singer SDK."
 readme = "README.md"
-authors = [{ name = "Simao Moreira", email = "smoreira@broadvoice.com" }]
+authors = ["Simao Moreira <smoreira@broadvoice.com>"]
 keywords = [
     "ELT",
     "NetsuiteSuiteQL",
