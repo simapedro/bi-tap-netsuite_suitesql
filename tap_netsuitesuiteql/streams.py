@@ -18,7 +18,7 @@ class CurrencyRateStream(NetsuiteSuiteQLStream):
     """Define custom stream."""
 
     name = "currencyRate"
-    path = "https://8425499.suitetalk.api.netsuite.com/services/rest/query/v1/suiteql"
+    path = ""
     query = "SELECT BUILTIN.DF(basecurrency) AS baseCurrency, effectivedate, exchangerate FROM currencyRate WHERE effectiveDate >= '1/1/2025'"
     replication_key = None
 
