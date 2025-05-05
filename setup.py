@@ -9,7 +9,7 @@ setup(
     py_modules=['tap_netsuitesuiteql'],
     entry_points='''
         [console_scripts]
-        tap-netsuitesuiteql=tap_netsnetsuitesuiteqluite:main
+        tap-netsuitesuiteql=tap_netsuite:main
     ''',
     packages=find_packages(exclude=['tests']),
     package_data={
