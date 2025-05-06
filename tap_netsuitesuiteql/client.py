@@ -117,8 +117,8 @@ class NetsuiteSuiteQLStream(RESTStream):
         query = self.query
         if next_page_token:
             offset = next_page_token
-            query = self.query
-        return {"query": query}
+            query = f"SELECT * from (SELECT  *, rownum as r FROM ( {self.query} )) WHERE r BETWEEN {offset} and {offset + 4999}"
+        return {"q": query}
 
     def parse_response(self, response: requests.Response) -> Iterable[dict]:
         """Parse the response and return an iterator of result records.
