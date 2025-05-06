@@ -5,6 +5,8 @@ from __future__ import annotations
 import sys
 import typing as t
 
+from datetime import datetime
+
 from singer_sdk import typing as th  # JSON Schema typing helpers
 
 from tap_netsuitesuiteql.client import NetsuiteSuiteQLStream
@@ -20,7 +22,8 @@ class CurrencyRateStream(NetsuiteSuiteQLStream):
     name = "currencyRate"
     path = ""
     primary_keys = ["id"]
-    query = "SELECT id, BUILTIN.DF(basecurrency) AS baseCurrency, effectivedate, exchangerate FROM currencyRate WHERE effectiveDate >= '1/1/2025' ORDER BY id"
+    query = "SELECT id, BUILTIN.DF(basecurrency) AS baseCurrency, effectivedate, exchangerate FROM currencyRate WHERE effectiveDate = '2/20/2025' ORDER BY id"
+    # query = "SELECT id, BUILTIN.DF(basecurrency) AS baseCurrency, effectivedate, exchangerate FROM currencyRate WHERE effectiveDate = '" + datetime.today().strftime('%m-%d-%Y') + "' ORDER BY id"
     replication_key = None
 
     schema = th.PropertiesList(
