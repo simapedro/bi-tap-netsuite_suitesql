@@ -62,7 +62,7 @@ class NetsuiteSuiteQLStream(RESTStream):
         Returns:
             A dictionary of HTTP headers.
         """
-        headers = {'Content-Type': 'application/json'}
+        headers = {'prefer': 'transient','Content-Type': 'application/json'}
         return headers
 
     def get_new_paginator(self) -> BaseAPIPaginatorBaseOffsetPaginator:
