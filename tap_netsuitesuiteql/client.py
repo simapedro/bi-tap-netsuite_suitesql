@@ -28,7 +28,7 @@ class NetsuiteSuiteQLStream(RESTStream):
     rest_method = "POST"
 
     # Update this value if necessary or override `parse_response`.
-    records_jsonpath = "$[*]"
+    records_jsonpath = "$.rows[*]"
 
     # Update this value if necessary or override `get_new_paginator`.
     next_page_token_jsonpath = "$.next_page"  # noqa: S105
@@ -119,7 +119,7 @@ class NetsuiteSuiteQLStream(RESTStream):
         if next_page_token:
             offset = next_page_token
             query = f"SELECT * from (SELECT  *, rownum as r FROM ( {self.query} )) WHERE r BETWEEN {offset} and {offset + 4999}"
-        return {"q": "SELECT BUILTIN.DF(basecurrency) AS baseCurrency, effectivedate, exchangerate FROM currencyRate WHERE effectiveDate = '2/20/2025'"}
+        return {"q": query}
     
     def validate_response(self, response):
         if not response.ok:
