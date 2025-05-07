@@ -81,22 +81,22 @@ class NetsuiteSuiteQLStream(RESTStream):
         return BaseOffsetPaginator(start_value=0, page_size=5000)
 
 
-    def get_url_params(
-        self,
-        context: Context | None,  # noqa: ARG002
-        next_page_token: Any | None,  # noqa: ANN401
-    ) -> dict[str, Any]:
-        """Return a dictionary of values to be used in URL parameterization.
+    # def get_url_params(
+    #     self,
+    #     context: Context | None,  # noqa: ARG002
+    #     next_page_token: Any | None,  # noqa: ANN401
+    # ) -> dict[str, Any]:
+    #     """Return a dictionary of values to be used in URL parameterization.
 
-        Args:
-            context: The stream context.
-            next_page_token: The next page index or value.
+    #     Args:
+    #         context: The stream context.
+    #         next_page_token: The next page index or value.
 
-        Returns:
-            A dictionary of URL query parameters.
-        """
-        params = {"script": 1074, "deploy": 1}
-        return params
+    #     Returns:
+    #         A dictionary of URL query parameters.
+    #     """
+    #     params = {"script": 1074, "deploy": 1}
+    #     return params
 
     def prepare_request_payload(
         self,
