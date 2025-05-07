@@ -119,7 +119,7 @@ class NetsuiteSuiteQLStream(RESTStream):
         if next_page_token:
             offset = next_page_token
             query = f"SELECT * from (SELECT  *, rownum as r FROM ( {self.query} )) WHERE r BETWEEN {offset} and {offset + 4999}"
-        return {"q": query}
+        return {"q": "SELECT id, BUILTIN.DF(basecurrency) AS baseCurrency, effectivedate, exchangerate FROM currencyRate WHERE effectiveDate = '2/20/2025' ORDER BY id"}
     
     def validate_response(self, response):
         if not response.ok:
