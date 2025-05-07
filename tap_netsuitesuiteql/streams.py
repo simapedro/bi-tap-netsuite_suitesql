@@ -27,7 +27,6 @@ class CurrencyRateStream(NetsuiteSuiteQLStream):
     replication_key = None
 
     schema = th.PropertiesList(
-        th.Property("id", th.NumberType),
         th.Property("basecurrency", th.StringType),
         th.Property("effectivedate", th.DateType),
         th.Property("exchangerate", th.StringType),
