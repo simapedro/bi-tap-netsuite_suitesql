@@ -10,6 +10,7 @@ import requests
 from singer_sdk.helpers.jsonpath import extract_jsonpath
 from singer_sdk.pagination import BaseAPIPaginator, BaseOffsetPaginator  # noqa: TCH002
 from singer_sdk.streams import RESTStream
+import logging
 
 from tap_netsuitesuiteql.auth import NetsuiteSuiteQLAuthenticator
 
@@ -119,6 +120,15 @@ class NetsuiteSuiteQLStream(RESTStream):
             offset = next_page_token
             query = f"SELECT * from (SELECT  *, rownum as r FROM ( {self.query} )) WHERE r BETWEEN {offset} and {offset + 4999}"
         return {"q": query}
+    
+    def validate_response(self, response):
+        if not response.ok:
+            try:
+                error_details = response.json()
+            except Exception:
+                error_details = response.text
+            logging.error(f"API Error: {response.status_code} - {error_details}")
+            response.raise_for_status()
 
     def parse_response(self, response: requests.Response) -> Iterable[dict]:
         """Parse the response and return an iterator of result records.
