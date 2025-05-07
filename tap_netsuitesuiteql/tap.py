@@ -53,7 +53,7 @@ class TapNetsuiteSuiteQL(Tap):
             A list of discovered streams.
         """
         return [
-            streams.CurrencyRateStream(self)
+            streams.RenewalItemsStream(self)
         ]
 
 
