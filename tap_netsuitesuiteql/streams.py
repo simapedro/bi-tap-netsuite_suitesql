@@ -21,8 +21,7 @@ class CurrencyRateStream(NetsuiteSuiteQLStream):
 
     name = "currencyRate"
     path = ""
-    # query = "SELECT BUILTIN.DF(basecurrency) AS baseCurrency, effectivedate, exchangerate FROM currencyRate WHERE effectiveDate = '2/20/2025'"
-    query = "SELECT BUILTIN.DF(basecurrency) AS baseCurrency, effectivedate, exchangerate FROM currencyRate WHERE effectiveDate = '" + datetime.today().strftime('%m-%d-%Y')
+    query = "SELECT BUILTIN.DF(basecurrency) AS baseCurrency, effectivedate, exchangerate FROM currencyRate WHERE effectiveDate = '" + datetime.today().strftime('%m-%d-%Y') + "'"
     replication_key = None
 
     schema = th.PropertiesList(
