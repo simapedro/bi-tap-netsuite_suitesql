@@ -28,5 +28,6 @@ class CurrencyRateStream(NetsuiteSuiteQLStream):
         th.Property("basecurrency", th.StringType),
         th.Property("effectivedate", th.DateType),
         th.Property("exchangerate", th.StringType),
+        th.Property("transactionCurrency", th.StringType),
 
     ).to_dict()
