@@ -31,3 +31,19 @@ class CurrencyRateStream(NetsuiteSuiteQLStream):
         th.Property("transactioncurrency", th.StringType),
 
     ).to_dict()
+
+class TransactionLineStream(NetsuiteSuiteQLStream):
+    """Define custom stream."""
+
+    name = "transactionline"
+    path = ""
+    query = "SELECT memo, custcol_pt_project, creditForeignAmount, custcol_sii_service_date FROM transactionLine"
+    replication_key = None
+
+    schema = th.PropertiesList(
+        th.Property("basecurrency", th.StringType),
+        th.Property("effectivedate", th.DateType),
+        th.Property("exchangerate", th.StringType),
+        th.Property("transactioncurrency", th.StringType),
+
+    ).to_dict()
