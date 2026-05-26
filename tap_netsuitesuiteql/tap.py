@@ -54,7 +54,17 @@ class TapNetsuiteSuiteQL(Tap):
         """
         return [
             streams.CurrencyRateStream(self),
-            streams.TransactionLineStream(self)
+            streams.TransactionLineStream(self),
+            streams.AccountStream(self),
+            streams.TransactionStream(self),
+            streams.SubsidiaryStream(self),
+            streams.ClassificationStream(self),
+            streams.DepartmentStream(self),
+            streams.EntityStream(self),
+            streams.CurrencyStream(self),
+            streams.AccountContextSearchStream(self),
+            streams.AccountingContextStream(self),
+            streams.TransactionAccountingLineStream(self)
         ]
 
 
