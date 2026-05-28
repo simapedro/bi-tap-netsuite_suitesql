@@ -37,7 +37,7 @@ class TransactionLineStream(NetsuiteSuiteQLStream):
 
     name = "transactionline"
     path = ""
-    query = "SELECT tl.memo, tl.custcol_pt_project, tl.creditForeignAmount, tl.custcol_sii_service_date FROM transactionline AS tl INNER JOIN AccountingPeriod AS p ON tl.postingperiod = p.id WHERE p.startdate >= '2026-01-01'" 
+    query = "SELECT tl.memo, tl.custcol_pt_project, tl.creditForeignAmount, tl.custcol_sii_service_date, p.startdate FROM transactionline AS tl LEFT JOIN transaction t ON t.id = tl.transaction LEFT JOIN AccountingPeriod AS p ON t.postingperiod = p.id WHERE p.startdate >= '01/01/2026'" 
     replication_key = None
 
     schema = th.PropertiesList(
@@ -67,7 +67,7 @@ class TransactionStream(NetsuiteSuiteQLStream):
 
     name = "transaction"
     path = ""
-    query = "SELECT type, trandate, dueDate, memo, custbody_sii_ref_no, exchangeRate, transactionNumber, tranid, custbody_thl_vehicle_plate FROM transaction"
+    query = "SELECT t.type, t.trandate, t.dueDate, t.memo, t.custbody_sii_ref_no, t.exchangeRate, t.transactionNumber, t.tranid, t.custbody_thl_vehicle_plate FROM transaction t LEFT JOIN AccountingPeriod AS p ON t.postingperiod = p.id WHERE p.startdate >= '01/01/2026'"
     replication_key = None
 
     schema = th.PropertiesList(
