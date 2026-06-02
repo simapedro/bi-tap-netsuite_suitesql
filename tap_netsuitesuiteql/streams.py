@@ -197,3 +197,88 @@ class TransactionAccountingLineStream(NetsuiteSuiteQLStream):
         th.Property("transactionLine", th.StringType),
 
     ).to_dict()
+
+class GeneralLedgerStream(NetsuiteSuiteQLStream):
+    """General ledger stream joining transaction lines with accounts, periods, subsidiaries and entities."""
+
+    name = "generalLedger"
+    path = ""
+    replication_key = "date"
+    replication_filter_field = "t.trandate"
+    query = """SELECT DISTINCT
+    search.acctNumber AS account_line_number,
+    a.fullname AS name,
+    t.type AS type,
+    s.name AS subsidiary,
+    a.accttype AS account_type,
+    period.periodName AS accounting_period,
+    c.name AS class,
+    d.name AS department,
+    BUILTIN.DF(l.custcol_gocontact_market) AS market,
+    t.trandate AS date,
+    t.dueDate AS due_date,
+    t.memo AS memo,
+    l.memo AS description,
+    l.custcol_pt_project AS project_id,
+    t.custbody_sii_ref_no AS reference_no,
+    t.exchangeRate AS exchange_rate,
+    t.transactionNumber AS transaction_number,
+    t.tranid AS document_number,
+    t.custbody_thl_vehicle_plate AS thl_vehicle_license_plate,
+    e.entityid AS entity_id,
+    e.altname AS entity_name,
+    eline.entityid AS entity_line_id,
+    eline.altname AS entity_line,
+    cu.name AS currency,
+    l.creditForeignAmount AS amount,
+    l.custcol_sii_service_date AS service_date
+FROM
+    transactionline l
+    LEFT JOIN account a ON a.id = l.expenseaccount
+    LEFT JOIN transaction t ON t.id = l.transaction
+    LEFT JOIN subsidiary s ON s.id = l.subsidiary
+    LEFT JOIN classification c ON c.id = l.class
+    LEFT JOIN department d ON d.id = l.department
+    LEFT JOIN entity e ON e.id = t.entity
+    LEFT JOIN entity eline ON eline.id = l.entity
+    LEFT JOIN currency cu ON cu.id = t.currency
+    LEFT JOIN AccountContextSearch search ON search.account = a.id
+    LEFT JOIN AccountingContext context ON context.id = search.AccountingContext
+    LEFT JOIN AccountingPeriod period ON period.id = t.postingPeriod
+    LEFT JOIN AccountAccountingBookMap abm ON abm.account = a.id
+    LEFT JOIN AccountingBook book ON book.id = abm.accountingbook
+WHERE
+    context.id = 1
+    -- AND period.startdate BETWEEN '2026-01-01' AND '2026-03-01'
+    -- AND s.id = 5
+    -- AND (book.id IS NULL OR book.id = 1)
+ORDER BY t.trandate"""
+
+    schema = th.PropertiesList(
+        th.Property("account_line_number", th.StringType),
+        th.Property("name", th.StringType),
+        th.Property("type", th.StringType),
+        th.Property("subsidiary", th.StringType),
+        th.Property("account_type", th.StringType),
+        th.Property("accounting_period", th.StringType),
+        th.Property("class", th.StringType),
+        th.Property("department", th.StringType),
+        th.Property("market", th.StringType),
+        th.Property("date", th.DateType),
+        th.Property("due_date", th.DateType),
+        th.Property("memo", th.StringType),
+        th.Property("description", th.StringType),
+        th.Property("project_id", th.StringType),
+        th.Property("reference_no", th.StringType),
+        th.Property("exchange_rate", th.StringType),
+        th.Property("transaction_number", th.StringType),
+        th.Property("document_number", th.StringType),
+        th.Property("thl_vehicle_license_plate", th.StringType),
+        th.Property("entity_id", th.StringType),
+        th.Property("entity_name", th.StringType),
+        th.Property("entity_line_id", th.StringType),
+        th.Property("entity_line", th.StringType),
+        th.Property("currency", th.StringType),
+        th.Property("amount", th.StringType),
+        th.Property("service_date", th.DateType),
+    ).to_dict()

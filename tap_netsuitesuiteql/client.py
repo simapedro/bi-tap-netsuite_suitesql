@@ -114,6 +114,13 @@ class NetsuiteSuiteQLStream(RESTStream):
             logging.error(f"API Error: {response.status_code} - {error_details}")
             response.raise_for_status()
 
+    def request_records(self, context: "Context | None") -> Iterable[dict]:
+        try:
+            yield from super().request_records(context)
+        except Exception as e:
+            logging.error(f"Stream '{self.name}' failed and will be skipped. Error: {e}")
+            return
+
     def parse_response(self, response: requests.Response) -> Iterable[dict]:
         """Parse the response and return an iterator of result records.
 
