@@ -37,16 +37,14 @@ class TransactionLineStream(NetsuiteSuiteQLStream):
 
     name = "transactionline"
     path = ""
-    query = "SELECT tl.memo, tl.custcol_pt_project, tl.creditForeignAmount, tl.custcol_sii_service_date, t.trandate FROM transactionline AS tl LEFT JOIN transaction t ON t.id = tl.transaction"
-    replication_key = "trandate"
-    replication_filter_field = "t.trandate"
+    query = "SELECT tl.memo, tl.custcol_pt_project, tl.creditForeignAmount, tl.custcol_sii_service_date, p.startdate FROM transactionline AS tl LEFT JOIN transaction t ON t.id = tl.transaction LEFT JOIN AccountingPeriod AS p ON t.postingperiod = p.id WHERE p.startdate >= '01/01/2026'" 
+    replication_key = None
 
     schema = th.PropertiesList(
         th.Property("memo", th.StringType),
         th.Property("custcol_pt_project", th.StringType),
         th.Property("creditForeignAmount", th.StringType),
         th.Property("custcol_sii_service_date", th.DateType),
-        th.Property("trandate", th.DateType),
 
     ).to_dict()
 
@@ -69,9 +67,8 @@ class TransactionStream(NetsuiteSuiteQLStream):
 
     name = "transaction"
     path = ""
-    query = "SELECT t.type, t.trandate, t.dueDate, t.memo, t.custbody_sii_ref_no, t.exchangeRate, t.transactionNumber, t.tranid, t.custbody_thl_vehicle_plate FROM transaction t"
-    replication_key = "trandate"
-    replication_filter_field = "t.trandate"
+    query = "SELECT t.type, t.trandate, t.dueDate, t.memo, t.custbody_sii_ref_no, t.exchangeRate, t.transactionNumber, t.tranid, t.custbody_thl_vehicle_plate FROM transaction t LEFT JOIN AccountingPeriod AS p ON t.postingperiod = p.id WHERE p.startdate >= '01/01/2026'"
+    replication_key = None
 
     schema = th.PropertiesList(
         th.Property("type", th.StringType),
@@ -92,11 +89,10 @@ class SubsidiaryStream(NetsuiteSuiteQLStream):
 
     name = "subsidiary"
     path = ""
-    query = "SELECT id, name FROM subsidiary"
+    query = "SELECT name FROM subsidiary"
     replication_key = None
 
     schema = th.PropertiesList(
-        th.Property("id", th.StringType),
         th.Property("name", th.StringType),
 
     ).to_dict()
@@ -106,11 +102,10 @@ class ClassificationStream(NetsuiteSuiteQLStream):
 
     name = "classification"
     path = ""
-    query = "SELECT id, name FROM classification"
+    query = "SELECT name FROM classification"
     replication_key = None
 
     schema = th.PropertiesList(
-        th.Property("id", th.StringType),
         th.Property("name", th.StringType),
 
     ).to_dict()
@@ -120,11 +115,10 @@ class DepartmentStream(NetsuiteSuiteQLStream):
 
     name = "department"
     path = ""
-    query = "SELECT id, name FROM department"
+    query = "SELECT name FROM department"
     replication_key = None
 
     schema = th.PropertiesList(
-        th.Property("id", th.StringType),
         th.Property("name", th.StringType),
 
     ).to_dict()
@@ -148,11 +142,10 @@ class CurrencyStream(NetsuiteSuiteQLStream):
 
     name = "currency"
     path = ""
-    query = "SELECT id, name FROM currency"
+    query = "SELECT name FROM currency"
     replication_key = None
 
     schema = th.PropertiesList(
-        th.Property("id", th.StringType),
         th.Property("name", th.StringType),
 
     ).to_dict()
@@ -162,12 +155,11 @@ class AccountContextSearchStream(NetsuiteSuiteQLStream):
 
     name = "accountContextSearch"
     path = ""
-    query = "SELECT id, acctnumber FROM accountContextSearch"
+    query = "SELECT acctNumber FROM accountContextSearch"
     replication_key = None
 
     schema = th.PropertiesList(
-        th.Property("id", th.StringType),
-        th.Property("acctnumber", th.StringType),
+        th.Property("acctNumber", th.StringType),
 
     ).to_dict()
 
