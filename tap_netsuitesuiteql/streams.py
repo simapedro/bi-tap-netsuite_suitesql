@@ -162,11 +162,11 @@ class AccountContextSearchStream(NetsuiteSuiteQLStream):
 
     name = "accountContextSearch"
     path = ""
-    query = "SELECT id, acctnumber FROM accountContextSearch"
+    query = "SELECT account, acctnumber FROM accountContextSearch"
     replication_key = None
 
     schema = th.PropertiesList(
-        th.Property("id", th.StringType),
+        th.Property("account", th.StringType),
         th.Property("acctnumber", th.StringType),
 
     ).to_dict()
