@@ -249,9 +249,9 @@ FROM
     LEFT JOIN AccountingBook book ON book.id = abm.accountingbook
 WHERE
     context.id = 1
-    -- AND period.startdate BETWEEN '2026-01-01' AND '2026-03-01'
-    -- AND s.id = 5
-    -- AND (book.id IS NULL OR book.id = 1)
+    AND period.startdate BETWEEN '2026-01-01' AND '2026-03-01'
+    AND s.id = 5
+    AND (book.id IS NULL OR book.id = 4)
 ORDER BY t.trandate"""
 
     schema = th.PropertiesList(
