@@ -70,7 +70,9 @@ class TapNetsuiteSuiteQL(Tap):
             streams.AccountContextSearchStream(self),
             streams.AccountingContextStream(self),
             streams.TransactionAccountingLineStream(self),
-            streams.GeneralLedgerStream(self),
+            streams.AccountingBookStream(self),
+            streams.AccountingPeriodStream(self),
+            streams.AccountAccountingBookMapStream(self),
         ]
 
 
