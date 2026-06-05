@@ -76,7 +76,7 @@ class TransactionStream(NetsuiteSuiteQLStream):
 
     name = "transaction"
     path = ""
-    query = "SELECT t.id, t.entity, t.currency, t.type, t.trandate, t.dueDate, t.memo, t.custbody_sii_ref_no, t.exchangeRate, t.transactionNumber, t.tranid, t.custbody_thl_vehicle_plate FROM transaction t"
+    query = "SELECT t.id, t.entity, t.currency, t.type, t.trandate, t.dueDate, t.postingperiod, t.memo, t.custbody_sii_ref_no, t.exchangeRate, t.transactionNumber, t.tranid, t.custbody_thl_vehicle_plate FROM transaction t"
     replication_key = "trandate"
     replication_filter_field = "t.trandate"
 
@@ -86,6 +86,7 @@ class TransactionStream(NetsuiteSuiteQLStream):
         th.Property("currency", th.StringType),
         th.Property("type", th.StringType),
         th.Property("trandate", th.DateType),
+        th.Property("postingperiod", th.StringType),
         th.Property("dueDate", th.DateType),
         th.Property("memo", th.StringType),
         th.Property("custbody_sii_ref_no", th.StringType),
