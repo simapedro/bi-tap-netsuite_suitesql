@@ -37,11 +37,17 @@ class TransactionLineStream(NetsuiteSuiteQLStream):
 
     name = "transactionline"
     path = ""
-    query = "SELECT tl.memo, tl.custcol_pt_project, tl.creditForeignAmount, tl.custcol_sii_service_date, t.trandate FROM transactionline AS tl LEFT JOIN transaction t ON t.id = tl.transaction"
+    query = "SELECT tl.expenseaccount, tl.transaction, tl.subsidiary, tl.class, tl.department, tl.entity, tl.memo, tl.custcol_pt_project, tl.creditForeignAmount, tl.custcol_sii_service_date, t.trandate FROM transactionline AS tl LEFT JOIN transaction t ON t.id = tl.transaction"
     replication_key = "trandate"
     replication_filter_field = "t.trandate"
 
     schema = th.PropertiesList(
+        th.Property("expenseaccount", th.StringType),   
+        th.Property("transaction", th.StringType),
+        th.Property("subsidiary", th.StringType),
+        th.Property("class", th.StringType),
+        th.Property("department", th.StringType),
+        th.Property("entity", th.StringType),
         th.Property("memo", th.StringType),
         th.Property("custcol_pt_project", th.StringType),
         th.Property("creditForeignAmount", th.StringType),
@@ -55,10 +61,11 @@ class AccountStream(NetsuiteSuiteQLStream):
 
     name = "account"
     path = ""
-    query = "SELECT fullname, accttype FROM account"
+    query = "SELECT id, fullname, accttype FROM account"
     replication_key = None
 
     schema = th.PropertiesList(
+        th.Property("id", th.StringType),
         th.Property("fullname", th.StringType),
         th.Property("accttype", th.StringType),
 
@@ -69,11 +76,14 @@ class TransactionStream(NetsuiteSuiteQLStream):
 
     name = "transaction"
     path = ""
-    query = "SELECT t.type, t.trandate, t.dueDate, t.memo, t.custbody_sii_ref_no, t.exchangeRate, t.transactionNumber, t.tranid, t.custbody_thl_vehicle_plate FROM transaction t"
+    query = "SELECT t.id, t.entity, t.currency, t.type, t.trandate, t.dueDate, t.memo, t.custbody_sii_ref_no, t.exchangeRate, t.transactionNumber, t.tranid, t.custbody_thl_vehicle_plate FROM transaction t"
     replication_key = "trandate"
     replication_filter_field = "t.trandate"
 
     schema = th.PropertiesList(
+        th.Property("id", th.StringType),
+        th.Property("entity", th.StringType),
+        th.Property("currency", th.StringType),
         th.Property("type", th.StringType),
         th.Property("trandate", th.DateType),
         th.Property("dueDate", th.DateType),
@@ -134,10 +144,11 @@ class EntityStream(NetsuiteSuiteQLStream):
 
     name = "entity"
     path = ""
-    query = "SELECT entityid, altname FROM entity"
+    query = "SELECT id, entityid, altname FROM entity"
     replication_key = None
 
     schema = th.PropertiesList(
+        th.Property("id", th.StringType),
         th.Property("entityid", th.StringType),
         th.Property("altname", th.StringType),
 
@@ -162,10 +173,11 @@ class AccountContextSearchStream(NetsuiteSuiteQLStream):
 
     name = "accountContextSearch"
     path = ""
-    query = "SELECT account, acctnumber FROM accountContextSearch"
+    query = "SELECT accountingContext, account, acctnumber FROM accountContextSearch"
     replication_key = None
 
     schema = th.PropertiesList(
+        th.Property("AccountingContext", th.StringType),
         th.Property("account", th.StringType),
         th.Property("acctnumber", th.StringType),
 
@@ -203,11 +215,12 @@ class AccountAccountingBookMapStream(NetsuiteSuiteQLStream):
 
     name = "accountAccountingBookMap"
     path = ""
-    query = "SELECT account FROM AccountAccountingBookMap"
+    query = "SELECT account, accountingbook FROM AccountAccountingBookMap"
     replication_key = None
 
     schema = th.PropertiesList(
         th.Property("account", th.StringType),
+        th.Property("accountingbook", th.StringType),
 
     ).to_dict()
 
@@ -216,11 +229,12 @@ class AccountingPeriodStream(NetsuiteSuiteQLStream):
 
     name = "accountingPeriod"
     path = ""
-    query = "SELECT id FROM AccountingPeriod"
+    query = "SELECT id, startdate FROM AccountingPeriod"
     replication_key = None
 
     schema = th.PropertiesList(
         th.Property("id", th.StringType),
+        th.Property("startdate", th.StringType),
 
     ).to_dict()
 
