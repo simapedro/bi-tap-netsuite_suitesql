@@ -37,12 +37,13 @@ class TransactionLineStream(NetsuiteSuiteQLStream):
 
     name = "transactionline"
     path = ""
-    query = "SELECT tl.expenseaccount, tl.transaction, tl.subsidiary, tl.class, tl.department, tl.entity, tl.memo, tl.custcol_pt_project, tl.creditForeignAmount, tl.custcol_sii_service_date, t.trandate FROM transactionline AS tl LEFT JOIN transaction t ON t.id = tl.transaction"
+    query = "SELECT tl.expenseaccount, tl.custcol_gocontact_market, tl.transaction, tl.subsidiary, tl.class, tl.department, tl.entity, tl.memo, tl.custcol_pt_project, tl.creditForeignAmount, tl.custcol_sii_service_date, t.trandate FROM transactionline AS tl LEFT JOIN transaction t ON t.id = tl.transaction"
     replication_key = "trandate"
     replication_filter_field = "t.trandate"
 
     schema = th.PropertiesList(
         th.Property("expenseaccount", th.StringType),   
+        th.Property("custcol_gocontact_market", th.StringType),
         th.Property("transaction", th.StringType),
         th.Property("subsidiary", th.StringType),
         th.Property("class", th.StringType),
@@ -230,12 +231,13 @@ class AccountingPeriodStream(NetsuiteSuiteQLStream):
 
     name = "accountingPeriod"
     path = ""
-    query = "SELECT id, startdate FROM AccountingPeriod"
+    query = "SELECT id, startdate, periodName FROM AccountingPeriod"
     replication_key = None
 
     schema = th.PropertiesList(
         th.Property("id", th.StringType),
         th.Property("startdate", th.StringType),
+        th.Property("periodName", th.StringType),
 
     ).to_dict()
 
