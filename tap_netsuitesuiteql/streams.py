@@ -51,7 +51,7 @@ class TransactionLineStream(NetsuiteSuiteQLStream):
         th.Property("entity", th.StringType),
         th.Property("memo", th.StringType),
         th.Property("custcol_pt_project", th.StringType),
-        th.Property("creditForeignAmount", th.StringType),
+        th.Property("creditForeignAmount", th.CurrencyType),
         th.Property("custcol_sii_service_date", th.DateType),
         th.Property("trandate", th.DateType),
 
