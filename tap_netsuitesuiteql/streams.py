@@ -37,9 +37,9 @@ class TransactionLineStream(NetsuiteSuiteQLStream):
 
     name = "transactionline"
     path = ""
-    query = "SELECT expenseaccount, custcol_gocontact_market, transaction, subsidiary, class, department, entity, memo, custcol_pt_project, creditForeignAmount, custcol_sii_service_date FROM transactionline"
-    replication_key = "trandate"
-    replication_filter_field = "t.trandate"
+    query = "SELECT tl.expenseaccount, tl.custcol_gocontact_market, tl.transaction, tl.subsidiary, tl.class, tl.department, tl.entity, tl.memo, tl.custcol_pt_project, tl.creditForeignAmount, tl.custcol_sii_service_date, t.last_sync_timestamp FROM transactionline tl JOIN transaction t ON t.id = tl.transaction"
+    replication_key = "last_sync_timestamp"
+    replication_filter_field = "t.last_sync_timestamp"
 
     schema = th.PropertiesList(
         th.Property("expenseaccount", th.StringType),   
@@ -53,7 +53,7 @@ class TransactionLineStream(NetsuiteSuiteQLStream):
         th.Property("custcol_pt_project", th.StringType),
         th.Property("creditForeignAmount", th.NumberType),
         th.Property("custcol_sii_service_date", th.DateType),
-
+        th.Property("last_sync_timestamp", th.DateTimeType),
     ).to_dict()
 
 class AccountStream(NetsuiteSuiteQLStream):
@@ -76,9 +76,9 @@ class TransactionStream(NetsuiteSuiteQLStream):
 
     name = "transaction"
     path = ""
-    query = "SELECT id, entity, currency, type, trandate, dueDate, postingperiod, memo, custbody_sii_ref_no, exchangeRate, transactionNumber, tranid, custbody_thl_vehicle_plate FROM transaction"
-    replication_key = "trandate"
-    replication_filter_field = "t.trandate"
+    query = "SELECT t.id, t.entity, t.currency, t.type, t.trandate, t.dueDate, t.postingperiod, t.memo, t.custbody_sii_ref_no, t.exchangeRate, t.transactionNumber, t.tranid, t.custbody_thl_vehicle_plate, t.last_sync_timestamp FROM transaction t"
+    replication_key = "last_sync_timestamp"
+    replication_filter_field = "t.last_sync_timestamp"
 
     schema = th.PropertiesList(
         th.Property("id", th.StringType),
@@ -94,6 +94,7 @@ class TransactionStream(NetsuiteSuiteQLStream):
         th.Property("transactionNumber", th.StringType),
         th.Property("tranid", th.StringType),
         th.Property("custbody_thl_vehicle_plate", th.StringType),
+        th.Property("last_sync_timestamp", th.DateTimeType),
 
     ).to_dict()
 
@@ -246,11 +247,12 @@ class AccountingBookStream(NetsuiteSuiteQLStream):
 
     name = "accountingBook"
     path = ""
-    query = "SELECT id FROM AccountingBook"
+    query = "SELECT id, name FROM AccountingBook"
     replication_key = None
 
     schema = th.PropertiesList(
         th.Property("id", th.StringType),
+        th.Property("name", th.StringType),
 
     ).to_dict()
 
