@@ -42,13 +42,13 @@ class TransactionLineStream(NetsuiteSuiteQLStream):
     replication_filter_field = "t.lastmodifieddate"
 
     schema = th.PropertiesList(
-        th.Property("expenseaccount", th.StringType),   
-        th.Property("custcol_gocontact_market", th.StringType),
-        th.Property("transaction", th.StringType),
-        th.Property("subsidiary", th.StringType),
-        th.Property("class", th.StringType),
-        th.Property("department", th.StringType),
-        th.Property("entity", th.StringType),
+        th.Property("expenseaccount", th.IntegerType),   
+        th.Property("custcol_gocontact_market", th.IntegerType),
+        th.Property("transaction", th.IntegerType),
+        th.Property("subsidiary", th.IntegerType),
+        th.Property("class", th.IntegerType),
+        th.Property("department", th.IntegerType),
+        th.Property("entity", th.IntegerType),
         th.Property("memo", th.StringType),
         th.Property("custcol_pt_project", th.StringType),
         th.Property("creditForeignAmount", th.NumberType),
@@ -65,7 +65,7 @@ class AccountStream(NetsuiteSuiteQLStream):
     replication_key = None
 
     schema = th.PropertiesList(
-        th.Property("id", th.StringType),
+        th.Property("id", th.IntegerType),
         th.Property("fullname", th.StringType),
         th.Property("accttype", th.StringType),
 
@@ -81,16 +81,16 @@ class TransactionStream(NetsuiteSuiteQLStream):
     replication_filter_field = "t.lastmodifieddate"
 
     schema = th.PropertiesList(
-        th.Property("id", th.StringType),
-        th.Property("entity", th.StringType),
-        th.Property("currency", th.StringType),
+        th.Property("id", th.IntegerType),
+        th.Property("entity", th.IntegerType),
+        th.Property("currency", th.IntegerType),
         th.Property("type", th.StringType),
         th.Property("trandate", th.DateType),
-        th.Property("postingperiod", th.StringType),
+        th.Property("postingperiod", th.IntegerType),
         th.Property("dueDate", th.DateType),
         th.Property("memo", th.StringType),
         th.Property("custbody_sii_ref_no", th.StringType),
-        th.Property("exchangeRate", th.StringType),
+        th.Property("exchangeRate", th.NumberType),
         th.Property("transactionNumber", th.StringType),
         th.Property("tranid", th.StringType),
         th.Property("custbody_thl_vehicle_plate", th.StringType),
@@ -108,7 +108,7 @@ class SubsidiaryStream(NetsuiteSuiteQLStream):
     replication_key = None
 
     schema = th.PropertiesList(
-        th.Property("id", th.StringType),
+        th.Property("id", th.IntegerType),
         th.Property("name", th.StringType),
 
     ).to_dict()
@@ -122,7 +122,7 @@ class ClassificationStream(NetsuiteSuiteQLStream):
     replication_key = None
 
     schema = th.PropertiesList(
-        th.Property("id", th.StringType),
+        th.Property("id", th.IntegerType),
         th.Property("name", th.StringType),
 
     ).to_dict()
@@ -136,7 +136,7 @@ class DepartmentStream(NetsuiteSuiteQLStream):
     replication_key = None
 
     schema = th.PropertiesList(
-        th.Property("id", th.StringType),
+        th.Property("id", th.IntegerType),
         th.Property("name", th.StringType),
 
     ).to_dict()
@@ -150,7 +150,7 @@ class EntityStream(NetsuiteSuiteQLStream):
     replication_key = None
 
     schema = th.PropertiesList(
-        th.Property("id", th.StringType),
+        th.Property("id", th.IntegerType),
         th.Property("entityid", th.StringType),
         th.Property("altname", th.StringType),
 
@@ -179,8 +179,8 @@ class AccountContextSearchStream(NetsuiteSuiteQLStream):
     replication_key = None
 
     schema = th.PropertiesList(
-        th.Property("AccountingContext", th.NumberType),
-        th.Property("account", th.StringType),
+        th.Property("AccountingContext", th.IntegerType),
+        th.Property("account", th.IntegerType),
         th.Property("acctnumber", th.StringType),
 
     ).to_dict()
@@ -190,12 +190,12 @@ class AccountingContextStream(NetsuiteSuiteQLStream):
 
     name = "accountingContext"
     path = ""
-    query = "SELECT id FROM accountingContext"
+    query = "SELECT id, name FROM accountingContext"
     replication_key = None
 
     schema = th.PropertiesList(
-        th.Property("id", th.StringType),
-
+        th.Property("id", th.IntegerType),
+        th.Property("name", th.StringType),
     ).to_dict()
 
 class TransactionAccountingLineStream(NetsuiteSuiteQLStream):
@@ -207,8 +207,8 @@ class TransactionAccountingLineStream(NetsuiteSuiteQLStream):
     replication_key = None
 
     schema = th.PropertiesList(
-        th.Property("transaction", th.StringType),
-        th.Property("transactionLine", th.StringType),
+        th.Property("transaction", th.IntegerType),
+        th.Property("transactionLine", th.IntegerType),
 
     ).to_dict()
 
@@ -222,7 +222,7 @@ class AccountAccountingBookMapStream(NetsuiteSuiteQLStream):
 
     schema = th.PropertiesList(
         th.Property("account", th.StringType),
-        th.Property("accountingbook", th.StringType),
+        th.Property("accountingbook", th.IntegerType),
 
     ).to_dict()
 
@@ -235,8 +235,8 @@ class AccountingPeriodStream(NetsuiteSuiteQLStream):
     replication_key = None
 
     schema = th.PropertiesList(
-        th.Property("id", th.StringType),
-        th.Property("startdate", th.StringType),
+        th.Property("id", th.IntegerType),
+        th.Property("startdate", th.DateType),
         th.Property("periodName", th.StringType),
 
     ).to_dict()
@@ -251,7 +251,7 @@ class AccountingBookStream(NetsuiteSuiteQLStream):
     replication_key = None
 
     schema = th.PropertiesList(
-        th.Property("id", th.StringType),
+        th.Property("id", th.IntegerType),
         th.Property("name", th.StringType),
 
     ).to_dict()
