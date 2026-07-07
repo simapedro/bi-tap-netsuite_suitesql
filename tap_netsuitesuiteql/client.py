@@ -70,19 +70,20 @@ class NetsuiteSuiteQLStream(RESTStream):
         return BaseOffsetPaginator(start_value=0, page_size=5000)
 
     def _get_start_date_for_query(self, context: Context | None) -> str | None:
-        """Return the incremental start date formatted for SuiteQL (MM/DD/YYYY)."""
+        """Return the incremental start date formatted for SuiteQL's TO_DATE (YYYY-MM-DD HH24:MI:SS)."""
         start_value = self.get_starting_replication_key_value(context)
         if start_value is None:
             return None
         if isinstance(start_value, datetime):
-            return start_value.strftime("%m/%d/%Y")
-        if isinstance(start_value, str):
-            for fmt in ("%Y-%m-%dT%H:%M:%S%z", "%Y-%m-%dT%H:%M:%S", "%Y-%m-%d"):
-                try:
-                    return datetime.strptime(start_value[:len(fmt)], fmt).strftime("%m/%d/%Y")
-                except ValueError:
-                    continue
-        return str(start_value)
+            dt = start_value
+        elif isinstance(start_value, str):
+            try:
+                dt = datetime.fromisoformat(start_value.replace("Z", "+00:00"))
+            except ValueError:
+                return None
+        else:
+            return None
+        return dt.strftime("%Y-%m-%d %H:%M:%S")
 
     def _build_filtered_query(self, context: Context | None) -> str:
         """Build the SuiteQL query, appending an incremental date filter when applicable."""
@@ -91,7 +92,10 @@ class NetsuiteSuiteQLStream(RESTStream):
             start_date = self._get_start_date_for_query(context)
             if start_date:
                 connector = "AND" if "WHERE" in query.upper() else "WHERE"
-                query = f"{query} {connector} {self.replication_filter_field} >= '{start_date}'"
+                query = (
+                    f"{query} {connector} {self.replication_filter_field} "
+                    f">= TO_DATE('{start_date}', 'YYYY-MM-DD HH24:MI:SS')"
+                )
         return query
 
     def prepare_request_payload(
