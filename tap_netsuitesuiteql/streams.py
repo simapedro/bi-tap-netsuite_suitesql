@@ -51,7 +51,7 @@ class TransactionLineStream(NetsuiteSuiteQLStream):
         th.Property("entity", th.IntegerType),
         th.Property("memo", th.StringType),
         th.Property("custcol_pt_project", th.StringType),
-        th.Property("creditForeignAmount", th.NumberType),
+        th.Property("creditforeignamount", th.NumberType),
         th.Property("custcol_sii_service_date", th.DateType),
         th.Property("lastmodifieddate", th.DateTimeType),
     ).to_dict()
@@ -87,11 +87,11 @@ class TransactionStream(NetsuiteSuiteQLStream):
         th.Property("type", th.StringType),
         th.Property("trandate", th.DateType),
         th.Property("postingperiod", th.IntegerType),
-        th.Property("dueDate", th.DateType),
+        th.Property("duedate", th.DateType),
         th.Property("memo", th.StringType),
         th.Property("custbody_sii_ref_no", th.StringType),
-        th.Property("exchangeRate", th.NumberType),
-        th.Property("transactionNumber", th.StringType),
+        th.Property("exchangerate", th.NumberType),
+        th.Property("transactionnumber", th.StringType),
         th.Property("tranid", th.StringType),
         th.Property("custbody_thl_vehicle_plate", th.StringType),
         th.Property("lastmodifieddate", th.DateTimeType),
@@ -179,7 +179,7 @@ class AccountContextSearchStream(NetsuiteSuiteQLStream):
     replication_key = None
 
     schema = th.PropertiesList(
-        th.Property("AccountingContext", th.IntegerType),
+        th.Property("accountingcontext", th.IntegerType),
         th.Property("account", th.IntegerType),
         th.Property("acctnumber", th.StringType),
 
@@ -208,7 +208,7 @@ class TransactionAccountingLineStream(NetsuiteSuiteQLStream):
 
     schema = th.PropertiesList(
         th.Property("transaction", th.IntegerType),
-        th.Property("transactionLine", th.IntegerType),
+        th.Property("transactionline", th.IntegerType),
 
     ).to_dict()
 
@@ -237,7 +237,7 @@ class AccountingPeriodStream(NetsuiteSuiteQLStream):
     schema = th.PropertiesList(
         th.Property("id", th.IntegerType),
         th.Property("startdate", th.DateType),
-        th.Property("periodName", th.StringType),
+        th.Property("periodname", th.StringType),
 
     ).to_dict()
 

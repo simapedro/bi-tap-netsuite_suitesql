@@ -130,4 +130,8 @@ class NetsuiteSuiteQLStream(RESTStream):
         Yields:
             Each record from the source.
         """
-        yield from extract_jsonpath(self.records_jsonpath, input=response.json())
+        for record in extract_jsonpath(self.records_jsonpath, input=response.json()):
+            # SuiteQL returns unquoted column/alias names normalized to lowercase,
+            # regardless of the casing used in the query. Normalize here so record
+            # keys reliably match the (lowercase) schema property names.
+            yield {key.lower(): value for key, value in record.items()}
