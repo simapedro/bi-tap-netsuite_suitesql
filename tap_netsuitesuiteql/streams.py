@@ -203,12 +203,13 @@ class TransactionAccountingLineStream(NetsuiteSuiteQLStream):
 
     name = "transactionAccountingLine"
     path = ""
-    query = "SELECT transaction, transactionLine FROM transactionAccountingLine"
+    query = "SELECT transaction, account FROM transactionAccountingLine"
     replication_key = None
 
     schema = th.PropertiesList(
         th.Property("transaction", th.IntegerType),
         th.Property("transactionline", th.IntegerType),
+        th.Property("account", th.IntegerType),
 
     ).to_dict()
 
