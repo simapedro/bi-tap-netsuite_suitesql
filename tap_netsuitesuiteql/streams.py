@@ -37,7 +37,7 @@ class TransactionLineStream(NetsuiteSuiteQLStream):
 
     name = "transactionline"
     path = ""
-    query = "SELECT tl.expenseaccount, tl.custcol_gocontact_market, tl.transaction, tl.subsidiary, tl.class, tl.department, tl.entity, tl.memo, tl.custcol_pt_project, tl.creditForeignAmount, tl.custcol_sii_service_date, t.lastmodifieddate FROM transactionline tl JOIN transaction t ON t.id = tl.transaction"
+    query = "SELECT tl.expenseaccount, tl.custcol_gocontact_market, tl.transaction, tl.subsidiary, tl.class, tl.department, tl.entity, tl.memo, tl.custcol_pt_project, tl.creditForeignAmount, tl.custcol_sii_service_date, t.id, t.lastmodifieddate FROM transactionline tl JOIN transaction t ON t.id = tl.transaction"
     replication_key = "lastmodifieddate"
     replication_filter_field = "t.lastmodifieddate"
 
@@ -53,6 +53,7 @@ class TransactionLineStream(NetsuiteSuiteQLStream):
         th.Property("custcol_pt_project", th.StringType),
         th.Property("creditforeignamount", th.NumberType),
         th.Property("custcol_sii_service_date", th.DateType),
+        th.Property("id", th.IntegerType),
         th.Property("lastmodifieddate", th.DateTimeType),
     ).to_dict()
 
