@@ -37,11 +37,12 @@ class TransactionLineStream(NetsuiteSuiteQLStream):
 
     name = "transactionline"
     path = ""
-    query = "SELECT tl.expenseaccount, tl.custcol_gocontact_market, tl.transaction, tl.subsidiary, tl.class, tl.department, tl.entity, tl.memo, tl.custcol_pt_project, tl.creditForeignAmount, tl.custcol_sii_service_date, t.id, t.lastmodifieddate FROM transactionline tl JOIN transaction t ON t.id = tl.transaction"
+    query = "SELECT tl.debitForeignAmount, tl.expenseaccount, tl.custcol_gocontact_market, tl.transaction, tl.subsidiary, tl.class, tl.department, tl.entity, tl.memo, tl.custcol_pt_project, tl.creditForeignAmount, tl.custcol_sii_service_date, t.id, t.lastmodifieddate FROM transactionline tl JOIN transaction t ON t.id = tl.transaction"
     replication_key = "lastmodifieddate"
     replication_filter_field = "t.lastmodifieddate"
 
     schema = th.PropertiesList(
+        th.Property("debitForeignAmount", th.NumberType),
         th.Property("expenseaccount", th.IntegerType),   
         th.Property("custcol_gocontact_market", th.IntegerType),
         th.Property("transaction", th.IntegerType),
@@ -62,13 +63,14 @@ class AccountStream(NetsuiteSuiteQLStream):
 
     name = "account"
     path = ""
-    query = "SELECT id, fullname, accttype FROM account"
+    query = "SELECT id, fullname, accttype, acctnumber FROM account"
     replication_key = None
 
     schema = th.PropertiesList(
         th.Property("id", th.IntegerType),
         th.Property("fullname", th.StringType),
         th.Property("accttype", th.StringType),
+        th.Property("acctnumber", th.StringType)
 
     ).to_dict()
 
@@ -204,13 +206,15 @@ class TransactionAccountingLineStream(NetsuiteSuiteQLStream):
 
     name = "transactionAccountingLine"
     path = ""
-    query = "SELECT transaction, account FROM transactionAccountingLine"
+    query = "SELECT transaction, account, posting, accountingbook FROM transactionAccountingLine"
     replication_key = None
 
     schema = th.PropertiesList(
         th.Property("transaction", th.IntegerType),
         th.Property("transactionline", th.IntegerType),
         th.Property("account", th.IntegerType),
+        th.Property("posting", th.BooleanType),
+        th.Property("accountingbook", th.IntegerType),
 
     ).to_dict()
 
