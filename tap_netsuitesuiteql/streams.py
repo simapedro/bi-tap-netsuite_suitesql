@@ -206,7 +206,7 @@ class TransactionAccountingLineStream(NetsuiteSuiteQLStream):
 
     name = "transactionAccountingLine"
     path = ""
-    query = "SELECT transaction, account, posting, accountingbook FROM transactionAccountingLine"
+    query = "SELECT transaction, transactionline, account, posting, accountingbook FROM transactionAccountingLine"
     replication_key = None
 
     schema = th.PropertiesList(
