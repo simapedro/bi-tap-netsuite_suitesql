@@ -104,7 +104,7 @@ class NetsuiteSuiteQLStream(RESTStream):
         next_page_token: Any | None,  # noqa: ANN401
     ) -> dict | None:
         query = self._build_filtered_query(context)
-        if next_page_token:
+        if next_page_token is not None:   # antes: "if next_page_token:" — 0 (primeira página) era ignorado
             offset = next_page_token
             query = f"SELECT * from (SELECT  *, rownum as r FROM ( {query} )) WHERE r BETWEEN {offset} and {offset + 4999}"
         return {"q": query}
