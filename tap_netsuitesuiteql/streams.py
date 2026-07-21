@@ -79,7 +79,7 @@ class TransactionStream(NetsuiteSuiteQLStream):
 
     name = "transaction"
     path = ""
-    query = "SELECT t.id, t.entity, t.currency, t.type, t.trandate, t.dueDate, t.postingperiod, t.memo, t.custbody_sii_ref_no, t.exchangeRate, t.transactionNumber, t.tranid, t.custbody_thl_vehicle_plate, t.lastmodifieddate FROM transaction t Where t.trandate > '1/1/2026'"
+    query = "SELECT t.id, t.entity, t.currency, t.type, t.trandate, t.dueDate, t.postingperiod, t.memo, t.custbody_sii_ref_no, t.exchangeRate, t.transactionNumber, t.tranid, t.custbody_thl_vehicle_plate, t.lastmodifieddate FROM transaction t"
     replication_key = "lastmodifieddate"
     replication_filter_field = "t.lastmodifieddate"
 
