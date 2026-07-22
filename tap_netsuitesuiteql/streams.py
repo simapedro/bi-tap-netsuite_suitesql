@@ -58,6 +58,31 @@ class TransactionLineStream(NetsuiteSuiteQLStream):
         th.Property("lastmodifieddate", th.DateTimeType),
     ).to_dict()
 
+class TransactionLineFullStream(NetsuiteSuiteQLStream):
+    """Define custom stream."""
+
+    name = "transactionline"
+    path = ""
+    query = "SELECT tl.debitForeignAmount, tl.expenseaccount, tl.custcol_gocontact_market, tl.transaction, tl.subsidiary, tl.class, tl.department, tl.entity, tl.memo, tl.custcol_pt_project, tl.creditForeignAmount, tl.custcol_sii_service_date, tl.id FROM transactionline tl"
+    replication_key = "lastmodifieddate"
+    replication_filter_field = "t.lastmodifieddate"
+
+    schema = th.PropertiesList(
+        th.Property("debitForeignAmount", th.NumberType),
+        th.Property("expenseaccount", th.IntegerType),   
+        th.Property("custcol_gocontact_market", th.IntegerType),
+        th.Property("transaction", th.IntegerType),
+        th.Property("subsidiary", th.IntegerType),
+        th.Property("class", th.IntegerType),
+        th.Property("department", th.IntegerType),
+        th.Property("entity", th.IntegerType),
+        th.Property("memo", th.StringType),
+        th.Property("custcol_pt_project", th.StringType),
+        th.Property("creditforeignamount", th.NumberType),
+        th.Property("custcol_sii_service_date", th.DateType),
+        th.Property("id", th.IntegerType),
+    ).to_dict()
+
 class AccountStream(NetsuiteSuiteQLStream):
     """Define custom stream."""
 
