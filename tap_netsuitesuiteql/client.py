@@ -67,7 +67,7 @@ class NetsuiteSuiteQLStream(RESTStream):
         return headers
 
     def get_new_paginator(self) -> BaseOffsetPaginator:
-        return BaseOffsetPaginator(start_value=0, page_size=5000)
+        return BaseOffsetPaginator(start_value=0, page_size=1000)
 
     def _get_start_date_for_query(self, context: Context | None) -> str | None:
         """Return the incremental start date formatted for SuiteQL's TO_DATE (YYYY-MM-DD HH24:MI:SS)."""
@@ -106,7 +106,7 @@ class NetsuiteSuiteQLStream(RESTStream):
         query = self._build_filtered_query(context)
         if next_page_token is not None:   # antes: "if next_page_token:" — 0 (primeira página) era ignorado
             offset = next_page_token
-            query = f"SELECT * from (SELECT  *, rownum as r FROM ( {query} )) WHERE r BETWEEN {offset} and {offset + 4999}"
+            query = f"SELECT * from (SELECT  *, rownum as r FROM ( {query} )) WHERE r BETWEEN {offset} and {offset + 999}"
         return {"q": query}
     
     def validate_response(self, response):
