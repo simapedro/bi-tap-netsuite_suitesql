@@ -122,7 +122,7 @@ class NetsuiteSuiteQLStream(RESTStream):
         try:
             yield from super().request_records(context)
         except Exception as e:
-            logging.error(f"Stream '{self.name}' failed and will be skipped. Error: {e}")
+            logging.exception(f"Stream '{self.name}' failed and will be skipped. Error: {e}")
             return
 
     def parse_response(self, response: requests.Response) -> Iterable[dict]:
