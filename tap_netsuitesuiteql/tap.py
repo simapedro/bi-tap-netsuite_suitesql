@@ -74,6 +74,7 @@ class TapNetsuiteSuiteQL(Tap):
             streams.AccountingPeriodStream(self),
             streams.AccountAccountingBookMapStream(self),
             streams.TransactionLineFullStream(self),
+            streams.generalledgerStream(self),
         ]
 
 

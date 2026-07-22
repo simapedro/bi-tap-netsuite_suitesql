@@ -32,6 +32,45 @@ class CurrencyRateStream(NetsuiteSuiteQLStream):
 
     ).to_dict()
 
+class generalledgerStream(NetsuiteSuiteQLStream):
+    """Define custom stream."""
+
+    name = "generalledger"
+    path = ""
+    query = "SELECT a.acctnumber, a.fullname, t.type AS type, s.name AS subsidiary, a.accttype AS account_type, period.startdate, period.periodName AS accounting_period, c.name AS class, d.name AS department, BUILTIN.DF(l.custcol_gocontact_market) AS market, t.trandate AS date, t.dueDate AS due_date, t.memo AS memo, l.memo AS description, l.custcol_pt_project AS project_id, t.custbody_sii_ref_no AS reference_no, t.exchangeRate AS exchange_rate, t.transactionNumber AS transaction_number, t.tranid AS document_number, t.custbody_thl_vehicle_plate AS thl_vehicle_license_plate, e.entityid AS entity_id, e.altname AS entity_name, eline.entityid AS entity_line_id, eline.altname AS entity_line, cu.symbol AS currency, COALESCE(l.creditForeignAmount,0) - COALESCE(l.debitForeignAmount,0) AS amount, l.custcol_sii_service_date AS service_date FROM transactionline l JOIN transactionAccountingLine tal ON tal.transaction = l.transaction AND tal.transactionline = l.id LEFT JOIN account a ON a.id = tal.account LEFT JOIN transaction t ON t.id = l.transaction LEFT JOIN subsidiary s ON s.id = l.subsidiary LEFT JOIN classification c ON c.id = l.class LEFT JOIN department d ON d.id = l.department LEFT JOIN entity e ON e.id = t.entity LEFT JOIN entity eline ON eline.id = l.entity LEFT JOIN currency cu ON cu.id = t.currency LEFT JOIN AccountingPeriod period ON period.id = t.postingPeriod WHERE tal.posting = 'T' AND a.accttype = 'Income' AND period.startdate BETWEEN TO_DATE('2026-01-01','YYYY-MM-DD') AND TO_DATE('2026-06-01','YYYY-MM-DD') AND s.id IN (5, 6, 22) AND tal.accountingbook = 1 AND COALESCE(l.creditForeignAmount,0) - COALESCE(l.debitForeignAmount,0) <> 0 ORDER BY s.name, t.trandate"
+    replication_key = None
+
+    schema = th.PropertiesList(
+        th.Property("acctnumber", th.StringType),
+        th.Property("fullname", th.StringType),
+        th.Property("type", th.StringType),
+        th.Property("subsidiary", th.StringType),
+        th.Property("account_type", th.StringType),
+        th.Property("startdate", th.DateType),
+        th.Property("accounting_period", th.StringType),
+        th.Property("class", th.StringType),
+        th.Property("department", th.StringType),
+        th.Property("market", th.StringType),
+        th.Property("date", th.DateType),
+        th.Property("due_date", th.DateType),
+        th.Property("memo", th.StringType),
+        th.Property("description", th.StringType),
+        th.Property("project_id", th.StringType),
+        th.Property("reference_no", th.StringType),
+        th.Property("exchange_rate", th.NumberType),
+        th.Property("transaction_number", th.StringType),
+        th.Property("document_number", th.StringType),
+        th.Property("thl_vehicle_license_plate", th.StringType),
+        th.Property("entity_id", th.StringType),
+        th.Property("entity_name", th.StringType),
+        th.Property("entity_line_id", th.StringType),
+        th.Property("entity_line", th.StringType),
+        th.Property("currency", th.StringType),
+        th.Property("amount", th.NumberType),
+        th.Property("service_date", th.DateType),
+
+    ).to_dict()
+
 class TransactionLineStream(NetsuiteSuiteQLStream):
     """Define custom stream."""
 
@@ -61,7 +100,7 @@ class TransactionLineStream(NetsuiteSuiteQLStream):
 class TransactionLineFullStream(NetsuiteSuiteQLStream):
     """Define custom stream."""
 
-    name = "transactionline"
+    name = "transactionlinefull"
     path = ""
     query = "SELECT tl.debitForeignAmount, tl.expenseaccount, tl.custcol_gocontact_market, tl.transaction, tl.subsidiary, tl.class, tl.department, tl.entity, tl.memo, tl.custcol_pt_project, tl.creditForeignAmount, tl.custcol_sii_service_date, tl.id FROM transactionline tl"
     replication_key = "lastmodifieddate"
