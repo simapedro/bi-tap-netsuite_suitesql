@@ -16,6 +16,22 @@ if sys.version_info >= (3, 9):
 else:
     import importlib_resources
 
+class CustomQueryStream(NetsuiteSuiteQLStream):
+    """Ad-hoc stream driven entirely by `custom_queries.custom_query` in the tap config.
+
+    Its schema is inferred at runtime from a sample record (see `_dynamic_schema`
+    on the base class) instead of a hardcoded `_default_schema`, so it adapts to
+    whatever columns the configured query returns.
+    """
+
+    name = "custom_query"
+    path = ""
+    _query = None
+    replication_key = None
+    _dynamic_schema = True
+
+    _default_schema = th.PropertiesList().to_dict()
+
 class CurrencyRateStream(NetsuiteSuiteQLStream):
     """Define custom stream."""
 

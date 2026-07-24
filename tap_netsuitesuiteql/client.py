@@ -35,6 +35,17 @@ _CUSTOM_SCHEMA_TYPE_MAP = {
 }
 
 
+def _infer_json_schema_type(value: Any) -> dict:
+    """Infer a JSON Schema type dict from a sample Python value."""
+    if isinstance(value, bool):
+        return {"type": ["boolean", "null"]}
+    if isinstance(value, int):
+        return {"type": ["integer", "null"]}
+    if isinstance(value, float):
+        return {"type": ["number", "null"]}
+    return {"type": ["string", "null"]}
+
+
 class NetsuiteSuiteQLStream(RESTStream):
     """NetsuiteSuiteQL stream class."""
     rest_method = "POST"
@@ -43,6 +54,10 @@ class NetsuiteSuiteQLStream(RESTStream):
     next_page_token_jsonpath = "$.next_page"  # noqa: S105
 
     _query = None
+    # When True, `schema` is inferred at runtime from a sample record instead
+    # of relying on `_default_schema`. Used by streams whose query is only
+    # known via the `custom_queries` tap config (e.g. CustomQueryStream).
+    _dynamic_schema: bool = False
     # Column expression used in the incremental WHERE filter (e.g. "t.trandate").
     # Must be set on streams that define a replication_key.
     replication_filter_field: str | None = None
@@ -105,10 +120,32 @@ class NetsuiteSuiteQLStream(RESTStream):
     def query(self, value: str) -> None:
         self._query = value
 
+    @cached_property
+    def _sample_record(self) -> dict | None:
+        """Fetch a single record to infer a dynamic schema from (see `_dynamic_schema`)."""
+        if not self.query:
+            return None
+        try:
+            return next(iter(self.request_records(context=None)), None)
+        except Exception:
+            logging.exception(
+                f"Stream '{self.name}' failed to fetch a sample record for schema inference."
+            )
+            return None
+
     @property
     def schema(self) -> dict:
         """Return the JSON schema for this stream, extended with any `custom_schema` fields from tap config."""
-        schema = dict(self._default_schema)
+        if self._dynamic_schema:
+            sample = self._sample_record
+            properties = (
+                {field: _infer_json_schema_type(value) for field, value in sample.items()}
+                if sample
+                else {}
+            )
+            schema = {"type": "object", "properties": properties}
+        else:
+            schema = dict(self._default_schema)
         overrides = self.config.get("custom_schema", {}).get(self.name)
         if overrides:
             properties = {**schema.get("properties", {})}

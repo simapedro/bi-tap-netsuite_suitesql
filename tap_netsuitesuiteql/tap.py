@@ -52,7 +52,12 @@ class TapNetsuiteSuiteQL(Tap):
         th.Property(
             "custom_queries",
             th.ObjectType(),
-            description="Map of stream name to a SuiteQL query that overrides the stream's built-in query, e.g. {'generalledger': 'SELECT ...'}.",
+            description=(
+                "Map of stream name to a SuiteQL query that overrides the stream's built-in query, "
+                "e.g. {'generalledger_v2': 'SELECT ...'}. Also used to supply the query for the "
+                "'custom_query' stream, which has no built-in query of its own and infers its schema "
+                "dynamically from the query's results, e.g. {'custom_query': 'SELECT ...'}."
+            ),
         ),
         th.Property(
             "custom_schema",
@@ -89,6 +94,7 @@ class TapNetsuiteSuiteQL(Tap):
             streams.AccountAccountingBookMapStream(self),
             streams.TransactionLineFullStream(self),
             streams.generalledgerStream(self),
+            streams.CustomQueryStream(self),
         ]
 
 
