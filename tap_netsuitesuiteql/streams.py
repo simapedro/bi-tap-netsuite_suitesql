@@ -1,4 +1,4 @@
-"""Stream type classes for tap-netsuitesuiteql."""
+﻿"""Stream type classes for tap-netsuitesuiteql."""
 
 from __future__ import annotations
 
@@ -21,10 +21,10 @@ class CurrencyRateStream(NetsuiteSuiteQLStream):
 
     name = "currencyRate"
     path = ""
-    query = "SELECT BUILTIN.DF(basecurrency) AS baseCurrency, effectivedate, exchangerate, BUILTIN.DF(transactioncurrency) AS transactioncurrency FROM currencyRate WHERE effectiveDate = '" + datetime.today().strftime('%m-%d-%Y') + "'"
+    _query = "SELECT BUILTIN.DF(basecurrency) AS baseCurrency, effectivedate, exchangerate, BUILTIN.DF(transactioncurrency) AS transactioncurrency FROM currencyRate WHERE effectiveDate = '" + datetime.today().strftime('%m-%d-%Y') + "'"
     replication_key = None
 
-    schema = th.PropertiesList(
+    _default_schema = th.PropertiesList(
         th.Property("basecurrency", th.StringType),
         th.Property("effectivedate", th.DateType),
         th.Property("exchangerate", th.NumberType),
@@ -37,10 +37,10 @@ class generalledgerStream(NetsuiteSuiteQLStream):
 
     name = "generalledger_v2"
     path = ""
-    query = "SELECT a.acctnumber, a.fullname, t.type AS type, s.name AS subsidiary, a.accttype AS account_type, period.startdate, period.periodName AS accounting_period, c.name AS class, d.name AS department, BUILTIN.DF(l.custcol_gocontact_market) AS market, t.trandate AS date, t.dueDate AS due_date, t.memo AS memo, l.memo AS description, l.custcol_pt_project AS project_id, t.custbody_sii_ref_no AS reference_no, t.exchangeRate AS exchange_rate, t.transactionNumber AS transaction_number, t.tranid AS document_number, t.custbody_thl_vehicle_plate AS thl_vehicle_license_plate, e.entityid AS entity_id, e.altname AS entity_name, eline.entityid AS entity_line_id, eline.altname AS entity_line, cu.symbol AS currency, COALESCE(l.creditForeignAmount,0) - COALESCE(l.debitForeignAmount,0) AS amount, l.custcol_sii_service_date AS service_date FROM transactionline l JOIN transactionAccountingLine tal ON tal.transaction = l.transaction AND tal.transactionline = l.id LEFT JOIN account a ON a.id = tal.account LEFT JOIN transaction t ON t.id = l.transaction LEFT JOIN subsidiary s ON s.id = l.subsidiary LEFT JOIN classification c ON c.id = l.class LEFT JOIN department d ON d.id = l.department LEFT JOIN entity e ON e.id = t.entity LEFT JOIN entity eline ON eline.id = l.entity LEFT JOIN currency cu ON cu.id = t.currency LEFT JOIN AccountingPeriod period ON period.id = t.postingPeriod WHERE period.startdate >= '2026-01-01' ORDER BY s.name, t.trandate"
+    _query = "SELECT a.acctnumber, a.fullname, t.type AS type, s.name AS subsidiary, a.accttype AS account_type, period.startdate, period.periodName AS accounting_period, c.name AS class, d.name AS department, BUILTIN.DF(l.custcol_gocontact_market) AS market, t.trandate AS date, t.dueDate AS due_date, t.memo AS memo, l.memo AS description, l.custcol_pt_project AS project_id, t.custbody_sii_ref_no AS reference_no, t.exchangeRate AS exchange_rate, t.transactionNumber AS transaction_number, t.tranid AS document_number, t.custbody_thl_vehicle_plate AS thl_vehicle_license_plate, e.entityid AS entity_id, e.altname AS entity_name, eline.entityid AS entity_line_id, eline.altname AS entity_line, cu.symbol AS currency, COALESCE(l.creditForeignAmount,0) - COALESCE(l.debitForeignAmount,0) AS amount, l.custcol_sii_service_date AS service_date FROM transactionline l JOIN transactionAccountingLine tal ON tal.transaction = l.transaction AND tal.transactionline = l.id LEFT JOIN account a ON a.id = tal.account LEFT JOIN transaction t ON t.id = l.transaction LEFT JOIN subsidiary s ON s.id = l.subsidiary LEFT JOIN classification c ON c.id = l.class LEFT JOIN department d ON d.id = l.department LEFT JOIN entity e ON e.id = t.entity LEFT JOIN entity eline ON eline.id = l.entity LEFT JOIN currency cu ON cu.id = t.currency LEFT JOIN AccountingPeriod period ON period.id = t.postingPeriod WHERE period.startdate >= '2026-01-01' ORDER BY s.name, t.trandate"
     replication_key = None
 
-    schema = th.PropertiesList(
+    _default_schema = th.PropertiesList(
         th.Property("acctnumber", th.StringType),
         th.Property("fullname", th.StringType),
         th.Property("type", th.StringType),
@@ -76,11 +76,11 @@ class TransactionLineStream(NetsuiteSuiteQLStream):
 
     name = "transactionline"
     path = ""
-    query = "SELECT tl.debitForeignAmount, tl.expenseaccount, tl.custcol_gocontact_market, tl.transaction, tl.subsidiary, tl.class, tl.department, tl.entity, tl.memo, tl.custcol_pt_project, tl.creditForeignAmount, tl.custcol_sii_service_date, tl.id, t.lastmodifieddate FROM transactionline tl JOIN transaction t ON t.id = tl.transaction"
+    _query = "SELECT tl.debitForeignAmount, tl.expenseaccount, tl.custcol_gocontact_market, tl.transaction, tl.subsidiary, tl.class, tl.department, tl.entity, tl.memo, tl.custcol_pt_project, tl.creditForeignAmount, tl.custcol_sii_service_date, tl.id, t.lastmodifieddate FROM transactionline tl JOIN transaction t ON t.id = tl.transaction"
     replication_key = "lastmodifieddate"
     replication_filter_field = "t.lastmodifieddate"
 
-    schema = th.PropertiesList(
+    _default_schema = th.PropertiesList(
         th.Property("debitForeignAmount", th.NumberType),
         th.Property("expenseaccount", th.IntegerType),   
         th.Property("custcol_gocontact_market", th.IntegerType),
@@ -102,11 +102,11 @@ class TransactionLineFullStream(NetsuiteSuiteQLStream):
 
     name = "transactionlinefull"
     path = ""
-    query = "SELECT tl.debitForeignAmount, tl.expenseaccount, tl.custcol_gocontact_market, tl.transaction, tl.subsidiary, tl.class, tl.department, tl.entity, tl.memo, tl.custcol_pt_project, tl.creditForeignAmount, tl.custcol_sii_service_date, tl.id FROM transactionline tl"
+    _query = "SELECT tl.debitForeignAmount, tl.expenseaccount, tl.custcol_gocontact_market, tl.transaction, tl.subsidiary, tl.class, tl.department, tl.entity, tl.memo, tl.custcol_pt_project, tl.creditForeignAmount, tl.custcol_sii_service_date, tl.id FROM transactionline tl"
     replication_key = "lastmodifieddate"
     replication_filter_field = "t.lastmodifieddate"
 
-    schema = th.PropertiesList(
+    _default_schema = th.PropertiesList(
         th.Property("debitForeignAmount", th.NumberType),
         th.Property("expenseaccount", th.IntegerType),   
         th.Property("custcol_gocontact_market", th.IntegerType),
@@ -127,10 +127,10 @@ class AccountStream(NetsuiteSuiteQLStream):
 
     name = "account"
     path = ""
-    query = "SELECT id, fullname, accttype, acctnumber FROM account"
+    _query = "SELECT id, fullname, accttype, acctnumber FROM account"
     replication_key = None
 
-    schema = th.PropertiesList(
+    _default_schema = th.PropertiesList(
         th.Property("id", th.IntegerType),
         th.Property("fullname", th.StringType),
         th.Property("accttype", th.StringType),
@@ -143,11 +143,11 @@ class TransactionStream(NetsuiteSuiteQLStream):
 
     name = "transaction"
     path = ""
-    query = "SELECT t.id, t.entity, t.currency, t.type, t.trandate, t.dueDate, t.postingperiod, t.memo, t.custbody_sii_ref_no, t.exchangeRate, t.transactionNumber, t.tranid, t.custbody_thl_vehicle_plate, t.lastmodifieddate FROM transaction t ORDER BY t.id"
+    _query = "SELECT t.id, t.entity, t.currency, t.type, t.trandate, t.dueDate, t.postingperiod, t.memo, t.custbody_sii_ref_no, t.exchangeRate, t.transactionNumber, t.tranid, t.custbody_thl_vehicle_plate, t.lastmodifieddate FROM transaction t ORDER BY t.id"
     replication_key = "lastmodifieddate"
     replication_filter_field = "t.lastmodifieddate"
 
-    schema = th.PropertiesList(
+    _default_schema = th.PropertiesList(
         th.Property("id", th.IntegerType),
         th.Property("entity", th.IntegerType),
         th.Property("currency", th.IntegerType),
@@ -171,10 +171,10 @@ class SubsidiaryStream(NetsuiteSuiteQLStream):
 
     name = "subsidiary"
     path = ""
-    query = "SELECT id, name FROM subsidiary"
+    _query = "SELECT id, name FROM subsidiary"
     replication_key = None
 
-    schema = th.PropertiesList(
+    _default_schema = th.PropertiesList(
         th.Property("id", th.IntegerType),
         th.Property("name", th.StringType),
 
@@ -185,10 +185,10 @@ class ClassificationStream(NetsuiteSuiteQLStream):
 
     name = "classification"
     path = ""
-    query = "SELECT id, name FROM classification"
+    _query = "SELECT id, name FROM classification"
     replication_key = None
 
-    schema = th.PropertiesList(
+    _default_schema = th.PropertiesList(
         th.Property("id", th.IntegerType),
         th.Property("name", th.StringType),
 
@@ -199,10 +199,10 @@ class DepartmentStream(NetsuiteSuiteQLStream):
 
     name = "department"
     path = ""
-    query = "SELECT id, name FROM department"
+    _query = "SELECT id, name FROM department"
     replication_key = None
 
-    schema = th.PropertiesList(
+    _default_schema = th.PropertiesList(
         th.Property("id", th.IntegerType),
         th.Property("name", th.StringType),
 
@@ -213,10 +213,10 @@ class EntityStream(NetsuiteSuiteQLStream):
 
     name = "entity"
     path = ""
-    query = "SELECT id, entityid, altname FROM entity"
+    _query = "SELECT id, entityid, altname FROM entity"
     replication_key = None
 
-    schema = th.PropertiesList(
+    _default_schema = th.PropertiesList(
         th.Property("id", th.IntegerType),
         th.Property("entityid", th.StringType),
         th.Property("altname", th.StringType),
@@ -228,10 +228,10 @@ class CurrencyStream(NetsuiteSuiteQLStream):
 
     name = "currency"
     path = ""
-    query = "SELECT id, name FROM currency"
+    _query = "SELECT id, name FROM currency"
     replication_key = None
 
-    schema = th.PropertiesList(
+    _default_schema = th.PropertiesList(
         th.Property("id", th.StringType),
         th.Property("name", th.StringType),
 
@@ -242,10 +242,10 @@ class AccountContextSearchStream(NetsuiteSuiteQLStream):
 
     name = "accountContextSearch"
     path = ""
-    query = "SELECT accountingContext, account, acctnumber FROM accountContextSearch"
+    _query = "SELECT accountingContext, account, acctnumber FROM accountContextSearch"
     replication_key = None
 
-    schema = th.PropertiesList(
+    _default_schema = th.PropertiesList(
         th.Property("accountingcontext", th.IntegerType),
         th.Property("account", th.IntegerType),
         th.Property("acctnumber", th.StringType),
@@ -257,10 +257,10 @@ class AccountingContextStream(NetsuiteSuiteQLStream):
 
     name = "accountingContext"
     path = ""
-    query = "SELECT id, name FROM accountingContext"
+    _query = "SELECT id, name FROM accountingContext"
     replication_key = None
 
-    schema = th.PropertiesList(
+    _default_schema = th.PropertiesList(
         th.Property("id", th.IntegerType),
         th.Property("name", th.StringType),
     ).to_dict()
@@ -270,10 +270,10 @@ class TransactionAccountingLineStream(NetsuiteSuiteQLStream):
 
     name = "transactionAccountingLine"
     path = ""
-    query = "SELECT transaction, transactionline, account, posting, accountingbook FROM transactionAccountingLine"
+    _query = "SELECT transaction, transactionline, account, posting, accountingbook FROM transactionAccountingLine"
     replication_key = None
 
-    schema = th.PropertiesList(
+    _default_schema = th.PropertiesList(
         th.Property("transaction", th.IntegerType),
         th.Property("transactionline", th.IntegerType),
         th.Property("account", th.IntegerType),
@@ -287,10 +287,10 @@ class AccountAccountingBookMapStream(NetsuiteSuiteQLStream):
 
     name = "accountAccountingBookMap"
     path = ""
-    query = "SELECT account, accountingbook FROM AccountAccountingBookMap"
+    _query = "SELECT account, accountingbook FROM AccountAccountingBookMap"
     replication_key = None
 
-    schema = th.PropertiesList(
+    _default_schema = th.PropertiesList(
         th.Property("account", th.StringType),
         th.Property("accountingbook", th.IntegerType),
 
@@ -301,10 +301,10 @@ class AccountingPeriodStream(NetsuiteSuiteQLStream):
 
     name = "accountingPeriod"
     path = ""
-    query = "SELECT id, startdate, periodName FROM AccountingPeriod"
+    _query = "SELECT id, startdate, periodName FROM AccountingPeriod"
     replication_key = None
 
-    schema = th.PropertiesList(
+    _default_schema = th.PropertiesList(
         th.Property("id", th.IntegerType),
         th.Property("startdate", th.DateType),
         th.Property("periodname", th.StringType),
@@ -317,10 +317,10 @@ class AccountingBookStream(NetsuiteSuiteQLStream):
 
     name = "accountingBook"
     path = ""
-    query = "SELECT id, name FROM AccountingBook"
+    _query = "SELECT id, name FROM AccountingBook"
     replication_key = None
 
-    schema = th.PropertiesList(
+    _default_schema = th.PropertiesList(
         th.Property("id", th.IntegerType),
         th.Property("name", th.StringType),
 

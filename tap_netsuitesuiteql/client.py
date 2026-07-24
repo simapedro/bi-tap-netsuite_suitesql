@@ -23,6 +23,17 @@ else:
 if TYPE_CHECKING:
     from singer_sdk.helpers.types import Context
 
+# Maps the simple type names accepted in the `custom_schema` tap config to
+# their JSON Schema representation.
+_CUSTOM_SCHEMA_TYPE_MAP = {
+    "string": {"type": ["string", "null"]},
+    "integer": {"type": ["integer", "null"]},
+    "number": {"type": ["number", "null"]},
+    "boolean": {"type": ["boolean", "null"]},
+    "date": {"type": ["string", "null"], "format": "date"},
+    "date-time": {"type": ["string", "null"], "format": "date-time"},
+}
+
 
 class NetsuiteSuiteQLStream(RESTStream):
     """NetsuiteSuiteQL stream class."""
@@ -31,7 +42,7 @@ class NetsuiteSuiteQLStream(RESTStream):
     records_jsonpath = "$.items[*]"
     next_page_token_jsonpath = "$.next_page"  # noqa: S105
 
-    query = None
+    _query = None
     # Column expression used in the incremental WHERE filter (e.g. "t.trandate").
     # Must be set on streams that define a replication_key.
     replication_filter_field: str | None = None
@@ -84,6 +95,29 @@ class NetsuiteSuiteQLStream(RESTStream):
         else:
             return None
         return dt.strftime("%Y-%m-%d %H:%M:%S")
+
+    @property
+    def query(self) -> str:
+        """Return the query for this stream, allowing override via the `custom_queries` tap config."""
+        return self.config.get("custom_queries", {}).get(self.name, self._query)
+
+    @query.setter
+    def query(self, value: str) -> None:
+        self._query = value
+
+    @property
+    def schema(self) -> dict:
+        """Return the JSON schema for this stream, extended with any `custom_schema` fields from tap config."""
+        schema = dict(self._default_schema)
+        overrides = self.config.get("custom_schema", {}).get(self.name)
+        if overrides:
+            properties = {**schema.get("properties", {})}
+            for field_name, json_type in overrides.items():
+                properties[field_name] = _CUSTOM_SCHEMA_TYPE_MAP.get(
+                    json_type, {"type": ["string", "null"]}
+                )
+            schema = {**schema, "properties": properties}
+        return schema
 
     def _build_filtered_query(self, context: Context | None) -> str:
         """Build the SuiteQL query, appending an incremental date filter when applicable."""

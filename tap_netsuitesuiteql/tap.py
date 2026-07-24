@@ -49,6 +49,20 @@ class TapNetsuiteSuiteQL(Tap):
             th.DateTimeType,
             description="Earliest date to extract data from (ISO format, e.g. 2024-01-01). Used on first run; subsequent runs use the saved bookmark.",
         ),
+        th.Property(
+            "custom_queries",
+            th.ObjectType(),
+            description="Map of stream name to a SuiteQL query that overrides the stream's built-in query, e.g. {'generalledger': 'SELECT ...'}.",
+        ),
+        th.Property(
+            "custom_schema",
+            th.ObjectType(),
+            description=(
+                "Map of stream name to {field_name: json_type} entries that extend/override that "
+                "stream's schema, e.g. {'generalledger_v2': {'novo_campo': 'string'}}. Valid json_type "
+                "values: string, integer, number, boolean, date, date-time."
+            ),
+        ),
     ).to_dict()
 
     def discover_streams(self) -> list[streams.NetsuiteSuiteQLStream]:
