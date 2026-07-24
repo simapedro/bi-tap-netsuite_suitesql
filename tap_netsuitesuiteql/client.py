@@ -141,6 +141,7 @@ class NetsuiteSuiteQLStream(RESTStream):
         if next_page_token is not None:   # antes: "if next_page_token:" — 0 (primeira página) era ignorado
             offset = next_page_token
             query = f"SELECT * from (SELECT  *, rownum as r FROM ( {query} )) WHERE r BETWEEN {offset} and {offset + 999}"
+        logging.info(f"SuiteQL request for stream '{self.name}': {query!r}")
         return {"q": query}
     
     def validate_response(self, response):
