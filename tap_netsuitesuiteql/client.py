@@ -35,6 +35,9 @@ _CUSTOM_SCHEMA_TYPE_MAP = {
 }
 
 
+_UNSET = object()
+
+
 def _infer_json_schema_type(value: Any) -> dict:
     """Infer a JSON Schema type dict from a sample Python value."""
     if isinstance(value, bool):
@@ -120,18 +123,32 @@ class NetsuiteSuiteQLStream(RESTStream):
     def query(self, value: str) -> None:
         self._query = value
 
-    @cached_property
+    _cached_sample_record: Any = _UNSET
+
+    @property
     def _sample_record(self) -> dict | None:
-        """Fetch a single record to infer a dynamic schema from (see `_dynamic_schema`)."""
+        """Fetch a single record to infer a dynamic schema from (see `_dynamic_schema`).
+
+        Skips (without caching) if called before RESTStream.__init__ has set up
+        `_requests_session` — this happens because singer_sdk's Stream.__init__
+        checks `self.schema` before RESTStream.__init__ finishes, and a dynamic
+        schema stream needs a live HTTP session to answer that. Only a real
+        attempt (success or genuine failure) gets memoized, so `schema` retries
+        cleanly once the stream is fully initialized.
+        """
+        if getattr(self, "_requests_session", None) is None:
+            return None
         if not self.query:
             return None
-        try:
-            return next(iter(self.request_records(context=None)), None)
-        except Exception:
-            logging.exception(
-                f"Stream '{self.name}' failed to fetch a sample record for schema inference."
-            )
-            return None
+        if self._cached_sample_record is _UNSET:
+            try:
+                self._cached_sample_record = next(iter(self.request_records(context=None)), None)
+            except Exception:
+                logging.exception(
+                    f"Stream '{self.name}' failed to fetch a sample record for schema inference."
+                )
+                self._cached_sample_record = None
+        return self._cached_sample_record
 
     @property
     def schema(self) -> dict:
